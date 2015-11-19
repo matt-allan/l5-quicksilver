@@ -29,13 +29,14 @@ class DeliveryController extends Controller
         $this->deliveries = $deliveries;
     }
 
+    /**
+     * @return array
+     */
     public function index()
     {
-        // For read methods we call the repository directly.
-        // You might want to create an application service
-        // for reading if you are adding query filters
-        // or any additional logic that needs to be
-        // reused outside of the controller.
+        // For read methods we call the repository directly.  You might want to create
+        // an application service for reading if you are adding query filters
+        // or any additional logic that needs to be reused outside of the controller.
         $deliveries = $this->deliveries->findAll();
 
         return fractal()
@@ -45,6 +46,10 @@ class DeliveryController extends Controller
             ;
     }
 
+    /**
+     * @param $deliveryId
+     * @return array
+     */
     public function show($deliveryId)
     {
         $delivery = $this->deliveries->find($deliveryId);
@@ -56,20 +61,36 @@ class DeliveryController extends Controller
             ;
     }
 
+    /**
+     * @param Delivery\Pickup  $pickup
+     * @param Delivery\Deliver $deliver
+     * @param Request          $httpRequest
+     * @param int              $deliveryId
+     * @return array
+     */
     public function update(Delivery\Pickup $pickup, Delivery\Deliver $deliver, Request $httpRequest, $deliveryId)
     {
-        // Rest APIs are pretty CRUDy, and there is only one update
-        // method for any update action.  Since our domain is
-        // less CRUDy, we infer the intent of the action and
+        // Rest APIs are pretty CRUDy, and there is only one update method for any update action.
+        // Since our domain is less CRUDy, we infer the intent of the action and
         // call the appropriate application service.
-        if ($httpRequest->input('status') === Status::PICKED_UP()->getValue()) {
+        if ($httpRequest->input('status') === Status::PICKED_UP) {
 
-            $request = $this->marshal(Delivery\PickupRequest::class, $httpRequest, compact('deliveryId'));
+            $request = $this->marshal(
+                Delivery\PickupRequest::class,
+                $httpRequest,
+                compact('deliveryId')
+            );
+
             $delivery = $pickup($request);
 
-        } else if ($httpRequest->input('status') === Status::DELIVERED()->getValue()) {
+        } else if ($httpRequest->input('status') === Status::DELIVERED) {
 
-            $request = $this->marshal(Delivery\DeliverRequest::class, $httpRequest, compact('deliveryId'));
+            $request = $this->marshal(
+                Delivery\DeliverRequest::class,
+                $httpRequest,
+                compact('deliveryId')
+            );
+
             $delivery = $deliver($request);
 
         } else {
@@ -83,6 +104,11 @@ class DeliveryController extends Controller
             ;
     }
 
+    /**
+     * @param Delivery\Create $create
+     * @param Request         $httpRequest
+     * @return array
+     */
     public function store(Delivery\Create $create, Request $httpRequest)
     {
         // First we 'marshal' an application request from the HTTP request.
