@@ -15,4 +15,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('delivery', 'DeliveryController', ['except' => 'edit', 'create']);
+Route::resource('delivery', 'DeliveryController', ['except' => ['edit', 'create', 'destroy']]);
