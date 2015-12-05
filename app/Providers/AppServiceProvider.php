@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Storage\DoctrineCustomerRepository;
 use App\Storage\DoctrineDeliveryRepository;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
@@ -35,7 +36,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->bind(Domain\Customer\Repository::class, function (Application $app) {
-            return new DoctrineDeliveryRepository(
+            return new DoctrineCustomerRepository(
                 $app->make('em'),
                 $app->make('em')->getClassMetaData(Domain\Customer::class)
             );
