@@ -16,6 +16,8 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\Inspire::class,
         \App\Console\Commands\CreateDelivery::class,
         \App\Console\Commands\DeliverDelivery::class,
+        \App\Console\Commands\PickupDelivery::class,
+        \App\Console\Commands\CreateCustomer::class,
     ];
 
     /**
