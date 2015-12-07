@@ -1,27 +1,83 @@
-## Laravel PHP Framework
+## Laravel Quicksilver
 
-[![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
-[![Total Downloads](https://poser.pugx.org/laravel/framework/d/total.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/framework/v/stable.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Unstable Version](https://poser.pugx.org/laravel/framework/v/unstable.svg)](https://packagist.org/packages/laravel/framework)
-[![License](https://poser.pugx.org/laravel/framework/license.svg)](https://packagist.org/packages/laravel/framework)
+This repo is a Laravel 5 host application for [matthew-james/quicksilver](https://github.com/matthew-james/quicksilver), a demo application to demonstrate hexagonal architecture.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as authentication, routing, sessions, queueing, and caching.
+### Setup
 
-Laravel is accessible, yet powerful, providing powerful tools needed for large, robust applications. A superb inversion of control container, expressive migration system, and tightly integrated unit testing support give you the tools you need to build any application with which you are tasked.
+```
+composer install
+touch database/database.sqlite
+php artisan migrate
+php artisan customer:create
+```
 
-## Official Documentation
+### Using The App
 
-Documentation for the framework can be found on the [Laravel website](http://laravel.com/docs).
+Run `php artisan serve` to start the built in webserver.
 
-## Contributing
+#### Create a Delivery
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
+##### Console
 
-## Security Vulnerabilities
+```
+php artisan delivery:create 'Tyler Durden' '555 Paper St' 'Chicago' 'IL' '30303' 'Joey Ramone' '222 Michigan Ave' 'Chicago' 'IL' '99922' 'STANDARD'
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+##### Rest API
 
-### License
+Endpoint:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
+```
+POST http://localhost:8000/delivery
+
+{
+    "pickup_name": "Tyler Durden",
+    "pickup_street": "555 Paper St",
+    "pickup_city": "chicago",
+    "pickup_state": "IL",
+    "pickup_post_code": "66043",
+    "dropoff_name": "Joey Ramone",
+    "dropoff_street": "222 Michigan Ave",
+    "dropoff_city": "chicago",
+    "dropoff_state": "IL",
+    "dropoff_post_code": "99922",
+    "priority": "STANDARD"
+}
+```
+
+#### Pickup a Delivery
+
+##### Console
+
+```
+php artisan delivery:pickup {id}
+```
+
+##### Rest API
+
+```
+PATCH http://localhost:8000/delivery/{id}
+
+{
+    "status": "PICKED_UP"
+}
+```
+
+#### Dropoff a Delivery
+
+##### Console
+
+```
+php artisan delivery:deliver {id} {signature}
+```
+
+##### Rest API
+
+```
+PATCH http://localhost:8000/delivery/{id}
+
+{
+    "status": "DELIVERED",
+    "signature": "Joey Ramone"
+}
+```
